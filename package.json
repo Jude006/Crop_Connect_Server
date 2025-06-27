@@ -24,6 +24,7 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "paystack": "^2.0.1"
+    "paystack": "^2.0.1",
+    "qrcode-terminal": "^0.12.0"
   }
 }
