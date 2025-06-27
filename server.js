@@ -15,10 +15,21 @@ const favouritesRoutes = require('./routes/favouritesRoutes');
 connectDb();
 app.set('trust proxy', 1);
 app.use(helmet());  
-// const cors = require('cors');
  
+
+const allowedOrigins = [
+  'https://crop-connect-pink.vercel.app',
+  'http://localhost:3000'
+];
+  credentials: true
 app.use(cors({
-  origin: 'https://crop-connect-pink.vercel.app/',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
  
