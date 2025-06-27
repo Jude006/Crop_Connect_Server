@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: farmconnect-backend 
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build  
+    startCommand: node server.js 
+    envVars:
+      - key: MONGO_URI
+        value: ${MONGO_URI}
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: PORT
+        value: ${PORT: -3000}
+      - key: CLOUDINARY_API_KEY
+        value: ${CLOUDINARY_API_KEY}
+      - key : CLOUDINARY_API_SECRET
+        value: ${CLOUDINARY_API_SECRET}
+      - key: CLOUDINARY_CLOUD_NAME
+        value: ${CLOUDINARY_CLOUD_NAME}
+      - key: PAYSTACK_SECRET_KEY
+        value: ${PAYSTACK_SECRET_KEY}
+      - key: VITE_PAYSTACK_PUBLIC_KEY
+        value: ${VITE_PAYSTACK_PUBLIC_KEY}
