@@ -21,7 +21,6 @@ const allowedOrigins = [
   'https://crop-connect-pink.vercel.app',
   'http://localhost:3000'
 ];
-  credentials: true
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
