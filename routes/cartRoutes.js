@@ -60,7 +60,24 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// Add item to cart
+router.get('/', requireAuth, async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id });
+    
+    res.json({
+      success: true,
+      items: cart?.items || [],
+      count: cart?.items?.length || 0
+    });
+  } catch (err) {
+    console.error('Cart error:', err);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to fetch cart'
+    });
+  }
+});
+
 router.post(
   '/add',
   requireAuth,

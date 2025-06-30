@@ -172,8 +172,64 @@ router.get('/:id', requireAuth, async (req, res) => {
       }
     }
   );
-  
 
+ router.get('/recent', requireAuth, async (req, res) => {
+  try {
+    // Convert to ObjectId safely
+    let buyerId;
+    try {
+      buyerId = new mongoose.Types.ObjectId(req.user._id);
+    } catch (err) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid user ID format'
+      });
+    }
+
+    // Get count and total in a single query with better error handling
+    const result = await Order.aggregate([
+      { 
+        $match: { 
+          buyer: buyerId,
+          totalPrice: { $exists: true, $type: 'number' } // Ensure totalPrice exists and is a number
+        } 
+      },
+      { 
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+          totalSpent: { $sum: "$totalPrice" }
+        } 
+      }
+    ]);
+
+    // Handle empty results
+    const stats = result[0] || { count: 0, totalSpent: 0 };
+
+    res.json({
+      success: true,
+      count: stats.count,
+      totalSpent: stats.totalSpent
+    });
+
+  } catch (err) {
+    console.error('Recent orders error:', {
+      error: err.message,
+      stack: err.stack,
+      userId: req.user._id,
+      timestamp: new Date()
+    });
+    
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to fetch order data',
+      details: process.env.NODE_ENV === 'development' ? {
+        message: err.message,
+        stack: err.stack
+      } : undefined
+    });
+  }
+}); 
 
  router.get('/verify-payment/:reference', requireAuth, async (req, res) => {
   try {
@@ -334,7 +390,6 @@ router.get('/farmer-orders', requireAuth, async (req, res) => {
   }
 });
 
-  // Update order status (for farmers)
   router.patch(
     '/:id/status',
     requireAuth,
