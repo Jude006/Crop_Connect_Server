@@ -12,11 +12,12 @@ const productRoutes = require('./routes/productRoutes')
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes')
 const favouritesRoutes = require('./routes/favouritesRoutes');
-connectDb();
-app.set('trust proxy', 1);
+const notificationRoutes = require('./routes/notificationsRoutes'); 
+const farmerRoutes = require('./routes/farmerRoutes');
+connectDb(); 
+app.set('trust proxy', 1); 
 app.use(helmet());  
- 
-
+  
 const allowedOrigins = [
   'https://crop-connect-pink.vercel.app',
   'http://localhost:5173',
@@ -46,8 +47,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes); 
 app.use('/api/orders',orderRoutes)
-app.use('/api', favouritesRoutes);
-
+app.use('/api', favouritesRoutes); 
+app.use('/api/notifications', notificationRoutes); 
+app.use('/api/farmers', farmerRoutes);
+ 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error' });
